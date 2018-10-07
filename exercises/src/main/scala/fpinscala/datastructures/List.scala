@@ -50,17 +50,43 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
 
-  def tail[A](l: List[A]): List[A] = ???
+  def tail[A](l: List[A]): List[A] =
+    l match {
+      case Cons(_, y) => y
+      case Nil => sys.error("error")
+    }
 
-  def setHead[A](l: List[A], h: A): List[A] = ???
+  def setHead[A](l: List[A], h: A): List[A] =
+    l match {
+      case Nil => sys.error("error")
+      case Cons(_, t) => Cons(h, t)
+    }
 
-  def drop[A](l: List[A], n: Int): List[A] = ???
+  def drop[A](l: List[A], n: Int): List[A] = {
+    if (n <= 0)
+      l
+    else
+      l match {
+        case Nil => Nil
+        case Cons(_, t) => drop(t, n-1)
+      }
+  }
 
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = ???
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
+    l match {
+      case Cons(x, y) => if (f(x)) dropWhile(y, f)
+      case _ => l
+    }
 
-  def init[A](l: List[A]): List[A] = ???
+  def init[A](l: List[A]): List[A] =
+    l match {
+      case Nil => sys.error("error")
+      case Cons(_, Nil) => Nil
+      case Cons(h, t) => Cons(h, init(t))
+    }
 
-  def length[A](l: List[A]): Int = ???
+  def length[A](l: List[A]): Int =
+    foldRight(l, 0)((_,count) => 1 + count)
 
   def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
 
