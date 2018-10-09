@@ -88,7 +88,28 @@ object List { // `List` companion object. Contains functions for creating and wo
   def length[A](l: List[A]): Int =
     foldRight(l, 0)((_,count) => 1 + count)
 
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
+  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B =
+    l match {
+      case Nil => z
+      case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
+    }
+
+  // 3.11
+  def sum3(ints: List[Int]): Int = foldLeft(ints, 0)(_ + _)
+  def product3(ds: List[Double]): Double = foldLeft(ds, 1.0)(_ * _)
+  def length2[A](l: List[A]): Int = foldLeft(l, 0)((len, h) => 1 + len)
+
+  // 3.12
+  def reverse(l: List[A]): List[A] = foldLeft(l, List[A]())((xs, h) => Cons(h, xs))
+
+  // 3.13
+  def foldRight2[A,B](as: List[A], z: B)(f: (A, B) => B): B = foldLeft(reverse(as), z)((b,a) => f(a,b))
+
+  // 3.14
+  def appendViaFoldRight[A](a1: List[A], a2: List[A]): List[A] = foldRight(a1, a2)(Cons(_, _))
+
+  // 3.15
+  def concatenateLists(l: List[List[A]]): List[A] = foldRight(l, Nil:List[A](append)
 
   def map[A,B](l: List[A])(f: A => B): List[B] = ???
 }
