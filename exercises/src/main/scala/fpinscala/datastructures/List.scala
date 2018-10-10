@@ -109,7 +109,44 @@ object List { // `List` companion object. Contains functions for creating and wo
   def appendViaFoldRight[A](a1: List[A], a2: List[A]): List[A] = foldRight(a1, a2)(Cons(_, _))
 
   // 3.15
-  def concatenateLists(l: List[List[A]]): List[A] = foldRight(l, Nil:List[A](append)
+  def concat(l: List[List[A]]): List[A] = foldRight(l, Nil:List[A](append)
 
-  def map[A,B](l: List[A])(f: A => B): List[B] = ???
+  // 3.16
+  def add1(l: List[Int]): List[Int] = foldRight(l, Nil:List[Int]((h, t) => Cons(h+1, t))
+
+  // 3.17
+  def doubleListToStringList(l: List[Double]): List[String] =
+    foldRight(l, Nil:List[String])((h, t) => Cons(h.toString, t))
+
+  // 3.18
+  def map[A,B](as: List[A])(f: A => B): List[B] =
+    foldRight(as, Nil:List[B])((h, t) => Cons(f(h), t))
+
+  // 3.19
+  def filter[A](as: List[A])(f: A => Boolean): List[A] =
+    foldRight(as, Nil:List[A])((h, t) => if (f(h)) Cons(h, t) else t)
+
+  // 3.20
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] =
+    concat(map(l)(f))
+
+  // 3.21
+  def filterUsingFlatMap[A](as: List[A])(f: A => Boolean): List[A] =
+    flatMap(as)(a => if (f(a)) List(a) else Nil)
+
+  // 3.22
+  def combineTwoLists(a: List[Int], b: List[Int]): List[Int] =
+    (a,b) match {
+      case (Nil, _) => Nil
+      case (_, Nil) => Nil
+      case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1+h2, combineTwoLists(t1, t2))
+    }
+
+  // 3.23
+  def zipWith[A,B,C](a: List[A], b: List[B])(f: (A, B) => C): List[C] =
+    (a, b) match {
+      case (Nil, _) => Nil
+      case (_, Nil) => Nil
+      case (Cons(h1, t1), Cons(h2, t2)) => Cons(f(h1, h2), zipWith(t1, t2)(f))
+    }
 }
